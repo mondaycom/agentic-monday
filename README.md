@@ -24,12 +24,9 @@ The `monday-code` plugin uses the monday-apps MCP server. Before installing, set
 
 ## Available Plugins
 
-| Plugin | Skill | Description |
-|--------|-------|-------------|
-| [monday-code](./plugins-official/monday-code/) | `/monday-code-init` | Scaffold frontend/backend/fullstack apps with monday SDK, JWT auth, Document DB, and multi-tenant patterns |
-| [monday-code](./plugins-official/monday-code/) | `/monday-code-migrate` | Migrate existing apps to monday-code — build-tool agnostic, preserves existing code |
-| [monday-code](./plugins-official/monday-code/) | `/monday-code-dev` | Start dev servers, local MongoDB, tunnel setup |
-| [monday-code](./plugins-official/monday-code/) | `/monday-code-deploy` | Deploy to monday-code with multi-region, cron, alerts, security scanning |
+| Plugin | Skills | Description |
+|--------|--------|-------------|
+| [monday-code](./plugins-official/monday-code/) | `/monday-code-init`, `/monday-code-migrate`, `/monday-code-dev`, `/monday-code-deploy` | Build, deploy, and manage monday code apps on the monday.com platform |
 
 ## What You Get
 
