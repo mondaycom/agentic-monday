@@ -2,26 +2,6 @@
 
 Guide for adding new plugins to the Monday Apps Framework marketplace.
 
-## Plugin Structure
-
-Follow this structure (matches [agentic-builders-hub](https://github.com/dapulse/agentic-builders-hub) conventions):
-
-```
-plugins/my-plugin/
-├── .claude-plugin/
-│   └── plugin.json          # Plugin manifest (required)
-├── skills/
-│   └── my-skill/
-│       └── SKILL.md         # Skill definition with YAML frontmatter (required)
-├── agents/                  # Subagent definitions (optional)
-│   └── agent-name.md
-├── hooks/                   # Lifecycle hooks (optional)
-│   └── hooks.json
-├── scripts/                 # Supporting scripts (optional)
-├── knowledge/               # Reference docs bundled with skill (optional)
-└── README.md                # User-facing documentation (required)
-```
-
 ## Plugin Manifest (plugin.json)
 
 ```json
@@ -32,7 +12,7 @@ plugins/my-plugin/
   "author": {
     "name": "your-name"
   },
-  "repository": "https://github.com/gregr/agentic-monday-apps-framework",
+  "repository": "https://github.com/mondaycom/agentic-monday-apps-framework",
   "keywords": ["monday", "monday-code", "your-keywords"]
 }
 ```
@@ -80,14 +60,6 @@ Step-by-step instructions for Claude to execute...
 
 ## Guidelines
 
-### monday-code Specifics
-
-- Use `MNDY_MONGODB_CONNECTION_STRING` (not `MONGODB_URI`) for Document DB
-- Use `@mondaycom/apps-sdk` version `^3.3.1` (not `"latest"`)
-- Include `.mondaycoderc` for runtime selection
-- Support both JWT token formats (production `dat.user_id` and dev `userId`)
-- Always filter DB queries by `accountId` for multi-tenant isolation
-
 ### Skill Writing
 
 - Include real, working code patterns (not theoretical examples)
@@ -98,15 +70,11 @@ Step-by-step instructions for Claude to execute...
 ## Testing Your Plugin
 
 ```bash
-# Load the marketplace locally
-/plugin marketplace add ./
-
-# Install your plugin
-/plugin install my-plugin@agentic-monday-apps-framework
-
-# Test the skill
-/my-skill
+# Start claude with the local plugin loaded
+claude --plugin-dir ./plugins/<your-plugin>
 ```
+
+See that your skills / functionality are loaded
 
 ## Submitting
 
@@ -119,4 +87,4 @@ Step-by-step instructions for Claude to execute...
 
 ## License
 
-Contributions are licensed under MIT.
+MIT

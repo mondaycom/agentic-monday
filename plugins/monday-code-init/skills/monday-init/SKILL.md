@@ -367,7 +367,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { default: app } = await import(path.join(__dirname, "dist", "app.js"));
 
-const PORT = process.env.PORT || 8080;
+const PORT = getSecret("PORT") || 8080;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
@@ -408,7 +408,7 @@ export async function getDb(): Promise<Db> {
   if (db) return db;
 
   // monday-code auto-injects MNDY_MONGODB_CONNECTION_STRING after first deploy
-  const uri = process.env.MNDY_MONGODB_CONNECTION_STRING;
+  const uri = getSecret("MNDY_MONGODB_CONNECTION_STRING");
   if (!uri) {
     throw new Error(
       "MNDY_MONGODB_CONNECTION_STRING not set. " +
@@ -493,7 +493,7 @@ export const produceMessage = async (message) => {
 }
 
 export const readQueueMessage = ({ body, query }) => {
-    const envMessageSecret = process.env.MNDY_TOPIC_MESSAGES_SECRET;
+    const envMessageSecret = getSecret("MNDY_TOPIC_MESSAGES_SECRET");
     logger.info(`expected queue secret value: ${envMessageSecret}`)
     logger.info(`queue message received body ${JSON.stringify(body)}`)
     logger.info(`queue message query params ${JSON.stringify(query)}`)
@@ -533,7 +533,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   }
 
   const token = authHeader.split(" ")[1];
-  const secret = process.env.MONDAY_CLIENT_SECRET;
+  const secret = getSecret("MONDAY_CLIENT_SECRET");
 
   if (!secret) {
     console.error("MONDAY_CLIENT_SECRET not configured");
@@ -566,7 +566,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 ```
 
 #### 4.2: Backend (if serving an automation webhook)
-**src/middleware/auth.ts** - JWT authentication using monday session tokens:
+**src/middleware/auth.ts** - JWT authentication using automation tokens:
 ```typescript
 import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
@@ -607,10 +607,12 @@ export default async function authenticationMiddleware(
 
     const { accountId, userId, backToUrl, shortLivedToken } = jwt.verify(
       authorization,
-      process.env.MONDAY_SIGNING_SECRET
+      getSecret("MONDAY_SIGNING_SECRET")
     ) as any;
 
     req.session = { accountId, userId, backToUrl, shortLivedToken };
+
+    // shortLivedToken is only included for automations, not for regular session tokens. If it's present, you can use it to make authenticated api graphql requests back to monday.com on behalf of the user who triggered the automation.
 
     next();
   } catch (err) {
@@ -619,6 +621,7 @@ export default async function authenticationMiddleware(
       .json({ error: "authentication error, could not verify credentials" });
   }
 }
+```
 
 
 ### Step 5: Environment variables
@@ -670,7 +673,7 @@ After creating all files:
 2. Copy `.env.example` to `.env` and fill in values
 3. Tell the user to:
    - Create an app at https://<slug>.monday.com/developers/apps
-4. Suggest next steps: `/monday-dev` to start development
+4. Important! You must suggest next step: `/monday-dev` to start development
 
 ### Step 8: Use MCP Tools
 
