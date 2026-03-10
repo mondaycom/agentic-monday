@@ -4,10 +4,10 @@ A Claude Code plugin marketplace for the full SDLC of monday.com apps.
 
 ## Prerequisites
 
-The `monday-code-init`, `monday-code-migrate`, and `monday-code-deploy` plugins use the monday-apps MCP server. Before installing, set your monday.com API token in the `.mcp.json` files:
+The `monday-code` plugin uses the monday-apps MCP server. Before installing, set your monday.com API token in the `.mcp.json` file in the plugin:
 
 1. Get your API token from https://<monday-slug>.monday.com/apps/manage/tokens
-2. Replace `${MONDAY_API_TOKEN}` in the `.mcp.json` files under `plugins-official/monday-code-init/`, `plugins-official/monday-code-migrate/`, and `plugins-official/monday-code-deploy/`
+2. Replace `${MONDAY_API_TOKEN}` in the `.mcp.json` files under `plugins-official/monday-code`
 
 ## Quick Start
 
@@ -16,10 +16,7 @@ The `monday-code-init`, `monday-code-migrate`, and `monday-code-deploy` plugins 
 /plugin marketplace add mondaycom/agentic-monday-apps-framework
 
 # Install plugins
-/plugin install monday-code-init@agentic-monday-apps-framework
-/plugin install monday-code-dev@agentic-monday-apps-framework
-/plugin install monday-code-migrate@agentic-monday-apps-framework
-/plugin install monday-code-deploy@agentic-monday-apps-framework
+/plugin install monday-code@agentic-monday-apps-framework
 
 # Use a skill
 /monday-code-init fullstack
@@ -29,10 +26,10 @@ The `monday-code-init`, `monday-code-migrate`, and `monday-code-deploy` plugins 
 
 | Plugin | Skill | Description |
 |--------|-------|-------------|
-| [monday-code-init](./plugins-official/monday-code-init/) | `/monday-code-init` | Scaffold frontend/backend/fullstack apps with monday SDK, JWT auth, Document DB, and multi-tenant patterns |
-| [monday-code-migrate](./plugins-official/monday-code-migrate/) | `/monday-migrate` | Migrate existing apps to monday-code — build-tool agnostic, preserves existing code |
-| [monday-code-dev](./plugins-official/monday-code-dev/) | `/monday-dev` | Start dev servers, local MongoDB, tunnel setup |
-| [monday-code-deploy](./plugins-official/monday-code-deploy/) | `/monday-deploy` | Deploy to monday-code with multi-region, cron, alerts, security scanning |
+| [monday-code](./plugins-official/monday-code/) | `/monday-code-init` | Scaffold frontend/backend/fullstack apps with monday SDK, JWT auth, Document DB, and multi-tenant patterns |
+| [monday-code](./plugins-official/monday-code/) | `/monday-code-migrate` | Migrate existing apps to monday-code — build-tool agnostic, preserves existing code |
+| [monday-code](./plugins-official/monday-code/) | `/monday-code-dev` | Start dev servers, local MongoDB, tunnel setup |
+| [monday-code](./plugins-official/monday-code/) | `/monday-code-deploy` | Deploy to monday-code with multi-region, cron, alerts, security scanning |
 
 ## What You Get
 
