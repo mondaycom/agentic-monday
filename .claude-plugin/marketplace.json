@@ -1,0 +1,35 @@
+{
+  "name": "agentic-monday-apps-framework",
+  "version": "0.1.0",
+  "description": "SDLC toolkit for building monday.com code apps - from initialization to deployment",
+  "owner": {
+    "name": "gregr"
+  },
+  "repository": "https://github.com/gregr/agentic-monday-apps-framework",
+  "plugins": [
+    {
+      "name": "monday-code-init",
+      "description": "Initialize new monday code projects (frontend/backend/fullstack) with proper structure, dependencies, and monday-code configuration",
+      "source": "./plugins/monday-code-init",
+      "category": "development"
+    },
+    {
+      "name": "monday-code-dev",
+      "description": "Development workflows - run dev servers, local Document DB, tunnel setup for monday code apps",
+      "source": "./plugins/monday-code-dev",
+      "category": "development"
+    },
+    {
+      "name": "monday-code-deploy",
+      "description": "Build, deploy, and manage monday code apps on serverless/CDN with multi-region, cron, alerts, and security scanning",
+      "source": "./plugins/monday-code-deploy",
+      "category": "deployment"
+    },
+    {
+      "name": "monday-code-test",
+      "description": "Run Playwright tests (API/UI/E2E) for monday code apps with JWT auth helpers and monday SDK mocking",
+      "source": "./plugins/monday-code-test",
+      "category": "testing"
+    }
+  ]
+}

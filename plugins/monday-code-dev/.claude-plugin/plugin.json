@@ -1,0 +1,10 @@
+{
+  "name": "monday-code-dev",
+  "description": "Development workflows - run dev servers, local Document DB, tunnel setup for monday code apps",
+  "version": "0.1.0",
+  "author": {
+    "name": "gregr"
+  },
+  "repository": "https://github.com/gregr/agentic-monday-apps-framework",
+  "keywords": ["monday", "monday-code", "development", "dev-server", "vite", "express"]
+}

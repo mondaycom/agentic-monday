@@ -1,0 +1,11 @@
+{
+  "name": "monday-code-deploy",
+  "description": "Build, deploy, and manage monday code apps on serverless/CDN with multi-region, cron, alerts, and security scanning",
+  "version": "0.1.0",
+  "author": {
+    "name": "gregr"
+  },
+  "repository": "https://github.com/gregr/agentic-monday-apps-framework",
+  "keywords": ["monday", "monday-code", "deploy", "serverless", "cdn", "multi-region", "cron"],
+  "mcpServers": "./.mcp.json"
+}

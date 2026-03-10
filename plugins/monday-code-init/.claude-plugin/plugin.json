@@ -1,0 +1,11 @@
+{
+  "name": "monday-code-init",
+  "description": "Initialize new monday code projects (frontend/backend/fullstack) with proper structure, dependencies, and monday-code configuration",
+  "version": "0.1.0",
+  "author": {
+    "name": "gregr"
+  },
+  "repository": "https://github.com/gregr/agentic-monday-apps-framework",
+  "keywords": ["monday", "monday-code", "init", "scaffold", "react", "express", "typescript"],
+  "mcpServers": "./.mcp.json"
+}

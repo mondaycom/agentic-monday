@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.test
+*.log
+.DS_Store
+.vscode/
+.idea/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.omc/
