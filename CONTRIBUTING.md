@@ -71,7 +71,7 @@ Step-by-step instructions for Claude to execute...
 
 ```bash
 # Start claude with the local plugin loaded
-claude --plugin-dir ./plugins/<your-plugin>
+claude --plugin-dir ./plugins-community/<your-plugin>
 ```
 
 See that your skills / functionality are loaded
