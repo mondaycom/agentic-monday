@@ -102,7 +102,7 @@ cd backend && npm run dev &
 cd frontend && npm run dev
 ```
 
-Or suggest the user open two terminal tabs.
+Or suggest the user to open two terminal tabs.
 
 ### Step 5: Local Dev Detection
 
@@ -120,71 +120,21 @@ When in local dev mode:
 - No real monday.com connection needed
 
 ### Step 6: Testing with monday.com
+To test the app inside monday.com, you will need to create the app and the desired app feature in the monday.com Developer Center.
+You can use the local dev server for the frontend and a tunnel for the backend.
 
-For testing the backend with real monday.com webhooks/integrations, the user needs a tunnel:
+
+If building a backend for automations/integrations on monday.com production with real monday.com webhooks/integrations, the user needs a tunnel:
 
 ```bash
 # Using ngrok (or similar)
-ngrok http 8080
+mapps tunnel:create -p 8080
 ```
 
-Then set the tunnel URL in monday.com Developer Center > Features > Build URL.
+Then set the tunnel URL in monday.com Developer Center go to:
+Your app > Features > your app feature > Deployment > External hosting
+
+And put in the fielsd the tunnel URL (e.g. `https://548f50475f79.apps-tunnel.monday.app`)
 
 For frontend testing inside monday.com:
-- Use `ngrok http 3000` or similar
-- Set the tunnel URL as the feature's build URL in Developer Center
-
-### Development Tips
-
-**Frontend:**
-- Access at http://localhost:3000
-- HMR enabled - changes reflect immediately
-- Use `@vibe/core` components for monday.com look and feel
-- Check browser console for Monday SDK debug info
-
-**Backend:**
-- Access at http://localhost:8080
-- Auto-restart on file changes (tsx watch)
-- Test health endpoint: `curl http://localhost:8080/health`
-- Use the Logger from `@mondaycom/apps-sdk` instead of `console.log`
-
-**Ports:**
-- Frontend: 3000 (Vite default)
-- Backend: 8080 (monday-code default)
-- MongoDB: 27017 (Docker)
-
-### Common Issues
-
-**Port already in use:**
-```bash
-lsof -ti:3000 | xargs kill -9   # Kill frontend
-lsof -ti:8080 | xargs kill -9   # Kill backend
-```
-
-**MongoDB connection fails:**
-```bash
-# Check if Docker container is running
-docker ps --filter name=monday-app-mongo
-
-# Restart if needed
-docker start monday-app-mongo
-```
-
-**Environment variables not loading:**
-- Verify `.env` file exists in `backend/`
-- Restart dev server after `.env` changes
-- Check `preload.cjs` loads dotenv: `require('dotenv').config()`
-
-**TypeScript errors during watch:**
-```bash
-cd backend && npx tsc --noEmit   # Type-check without building
-cd frontend && npx tsc --noEmit
-```
-
-## Notes
-
-- Use `run_in_background` for long-running dev servers
-- Provide clear instructions on how to stop servers (Ctrl+C)
-- Remind about MongoDB setup if backend uses Document DB
-- Frontend works standalone for UI development (mock mode)
-- Backend needs `MONDAY_CLIENT_SECRET` for JWT auth to work
+- Use the local dev server URL (http://localhost:3000) as the feature's Deployment URL in Developer Center

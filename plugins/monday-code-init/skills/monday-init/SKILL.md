@@ -236,15 +236,23 @@ async function getSessionToken(): Promise<string> {
   return token.data;
 }
 
-const API_BASE = import.meta.env.VITE_API_URL || "";
+async function getBackendUrl(): Promise<string> {
+  if (isLocalDev) {
+    return "http://localhost:8080";
+  }
+  const response = await monday.get("context");
+  // @ts-ignore
+  return response.data.appVersion.mondayCodeHostingUrl;
+}
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const token = await getSessionToken();
-  const res = await fetch(`${API_BASE}${path}`, {
+  const backendUrl = await getBackendUrl();
+  const res = await fetch(`${backendUrl}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: token,
       ...options.headers,
     },
   });
@@ -311,6 +319,8 @@ backend/
     └── utils/
         ├── logger.ts
         └── secrets.ts
+        └── env-vars.ts
+          └── queue.ts (optional, for async processing with monday-code queues)
 ```
 
 **package.json:**
@@ -382,11 +392,10 @@ app.use("/health", healthRouter);
 app.use("/api", authMiddleware);
 
 // Add your API routes here:
-// app.use("/api/items", itemsRouter);
+// app.use("/api/items", itemsRouter); # items router is a standard express controller
 
 export default app;
 ```
-
 
 **src/db/connection.ts** - Document DB (MongoDB) connection:
 ```typescript
@@ -450,6 +459,52 @@ export async function getSecret(key: string): Promise<string | undefined> {
 }
 ```
 
+**src/utils/env-vars.ts** - Utility for accessing environment variables:
+```typescript
+import { EnvironmentVariablesManager } from "@mondaycom/apps-sdk";
+
+const envManager = new EnvironmentVariablesManager();
+
+export function getEnvVar(key: string): string {
+  const value = envManager.getEnvVar(key);
+  if (!value) {
+    throw new Error(`Environment variable not set: ${key}`);
+  }
+  return value;
+}
+```
+
+** Optional - adding queue, in case the user wants to implement async processing with monday-code's built-in queue system: **
+
+**src/utils/queue.ts:**
+```typescript
+
+import { Logger, Queue, EnvironmentVariablesManager } from "@mondaycom/apps-sdk";
+
+const queue = new Queue();
+const logTag = "QueueService";
+const logger = new Logger(logTag);
+
+export const produceMessage = async (message) => {
+    logger.info(`produce message received ${message}`);
+    const messageId = await queue.publishMessage(message);
+    logger.info(`Message ${messageId} published.`);
+    return messageId;
+}
+
+export const readQueueMessage = ({ body, query }) => {
+    const envMessageSecret = process.env.MNDY_TOPIC_MESSAGES_SECRET;
+    logger.info(`expected queue secret value: ${envMessageSecret}`)
+    logger.info(`queue message received body ${JSON.stringify(body)}`)
+    logger.info(`queue message query params ${JSON.stringify(query)}`)
+    if (!queue.validateMessageSecret(query.secret))  {
+        logger.info("Queue message received is not valid, since secret is not matched, this message could come from an attacker.");
+        throw new Error('not allowed');
+    }
+    logger.info("Queue message received successfully.");
+    // process the queue message payload...
+};
+```
 
 #### 4.1: Backend (if fullstack app, where the backend is serving the frontend)
 
@@ -566,14 +621,13 @@ export default async function authenticationMiddleware(
 }
 
 
-### Step 5: Environment Files
+### Step 5: Environment variables
 
 Create `.env.example` in the backend directory:
 ```bash
 # monday-code auto-injects this after first deploy
 MNDY_MONGODB_CONNECTION_STRING=mongodb://localhost:27017/{{APP_NAME}}
 
-# Set in monday.com Developer Center > OAuth
 MONDAY_CLIENT_SECRET=your-client-secret
 
 # Optional
@@ -584,9 +638,6 @@ Create `.env.example` in the frontend directory (if applicable):
 ```bash
 # For local development only - generate a JWT with test user data
 VITE_DEV_TOKEN=your-dev-jwt-token
-
-# Backend URL for local dev (empty = same origin in production)
-VITE_API_URL=http://localhost:8080
 ```
 
 ### Step 6: Multi-Tenant Data Pattern
@@ -618,9 +669,7 @@ After creating all files:
 1. Run `npm install` in each directory
 2. Copy `.env.example` to `.env` and fill in values
 3. Tell the user to:
-   - Create an app at https://monday.com/developers/apps
-   - Set `MONDAY_APP_ID` env var from the app URL
-   - Set `MONDAY_CLIENT_SECRET` from OAuth settings
+   - Create an app at https://<slug>.monday.com/developers/apps
 4. Suggest next steps: `/monday-dev` to start development
 
 ### Step 8: Use MCP Tools
@@ -634,9 +683,8 @@ If the monday-apps MCP is configured (requires `MONDAY_API_TOKEN` in `.mcp.json`
 ## Notes
 
 - Always use TypeScript
-- Use `@mondaycom/apps-sdk` >= 3.3.1 (not `"latest"`)
-- Use `MNDY_MONGODB_CONNECTION_STRING` not `MONGODB_URI`
-- Include `.mondaycoderc` for runtime selection
+- Use `MNDY_MONGODB_CONNECTION_STRING` for database connection (auto-injected by monday-code after first deploy)
+- Optionally include `.mondaycoderc` for runtime selection
 - Add multi-tenant isolation (accountId) to all DB queries
 - Use the MondayContext pattern for frontend SDK integration
 - Support both production and local dev JWT token formats in auth middleware

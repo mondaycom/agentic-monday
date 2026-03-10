@@ -21,8 +21,15 @@ Build and deploy monday code apps to the monday-code platform (serverless + CDN)
 - User wants to promote an app version
 
 ## Instructions
+### Step 0: Prerequisites
+- Your monday account must have access to monday code. This is available OOTB on developer tier accounts, but must be opted into for other tiers. If you don't see "Code" in the left sidebar of the Developer Center, contact your monday admin to enable it. Free accounts do not have access to monday code.
+- You must have the `mapps` (`npm -g i @mondaycom/apps-cli`) CLI installed and authenticated (`mapps init`). This is the command-line tool for interacting with the monday-code platform.
+- You will need to go to the Developer Center and create a new app 
+- Don't forget to set up oauth scopes in the Developer Center if your app requires them, before promoting the app to live and publishing to customers.
+- An initial deployment is required to set up the environment variables (secrets) and get the auto-injected `MNDY_MONGODB_CONNECTION_STRING` for database access. Deploying an empty app first is recommended to get this value, which is needed for backend deployments.
 
 ### Step 1: Pre-Deployment Checks
+You will need to have the monday app id available as an environment variable (`MONDAY_APP_ID`) to deploy on your local machine. This is the unique identifier for your app in the monday ecosystem. The app ID will be displayed on the "General Settings" page of your app in the Developer Center.
 
 **Verify MONDAY_APP_ID:**
 ```bash
@@ -32,12 +39,12 @@ If not set, ask the user. They can find it in the URL of their app in the Develo
 
 **Verify mapps CLI is installed and authenticated:**
 ```bash
-npx @mondaycom/apps-cli --version
+mapps --version
 ```
 
 If not authenticated:
 ```bash
-npx @mondaycom/apps-cli init
+mapps init
 ```
 
 **Build and verify:**
@@ -63,7 +70,7 @@ mapps code:push -c -d dist -a ${MONDAY_APP_ID:?} --force && rm -f dist.zip
 Flags:
 - `-c` = CDN deployment (client-side static files)
 - `-d dist` = Use the dist directory
-- `--force` = Override existing deployment
+- `--force` = Override existing deployment (required to push directly to the live version, without the need to create a draft version first, pushing and promoting)
 
 **Backend deployment (Serverless):**
 ```bash
@@ -71,8 +78,6 @@ cd backend
 npm run build
 mapps code:push -a ${MONDAY_APP_ID:?} --force && rm -f code.tar.gz
 ```
-
-No `-c` flag = serverless deployment.
 
 **Fullstack deployment (both):**
 Deploy frontend first, then backend:
@@ -87,7 +92,7 @@ cd ../backend && npm run build && mapps code:push -a ${MONDAY_APP_ID:?} --force 
 **With security scanning:**
 Add `-s` flag to enable security scanning of the deployment artifact:
 ```bash
-mapps code:push -a ${MONDAY_APP_ID:?} --force -s
+mapps code:push -a ${MONDAY_APP_ID:?} -s
 ```
 
 View the security report after deployment:
@@ -114,7 +119,7 @@ Feature types and deployment mapping:
 | Feature Type | Deployment | Flag |
 |---|---|---|
 | BoardView, ItemView, DashboardWidget, ProductView | CDN | `-c` |
-| Integration, Webhook, AI feature | Serverless | (no flag) |
+| Workflow block | Serverless | (no flag) |
 
 ### Step 4: Verify Deployment
 
@@ -149,9 +154,10 @@ mapps code:env -a ${MONDAY_APP_ID}
 mapps code:env -a ${MONDAY_APP_ID} -k KEY -v "value"
 ```
 
-**Common env vars to set in production:**
-- `MONDAY_CLIENT_SECRET` - Required for JWT auth (set in Developer Center > OAuth)
-- `NODE_ENV` - Set to `"production"`
+**Common secrets (as environmnet variables) to set in production:**
+- `MONDAY_CLIENT_SECRET` - Required for JWT auth for a fullstack app(set in Developer Center > OAuth)
+- `MONDAY_SIGNING_SECRET` - Required for verifying webhooks from automations
+
 
 **Note:** `MNDY_MONGODB_CONNECTION_STRING` is auto-injected by monday-code after first deploy. Do NOT set it manually.
 
@@ -159,18 +165,20 @@ mapps code:env -a ${MONDAY_APP_ID} -k KEY -v "value"
 ```typescript
 import { SecretsManager } from "@mondaycom/apps-sdk";
 const secrets = new SecretsManager();
-const { value } = await secrets.getSecret("API_KEY");
+const { value } = await secrets.getSecret("MONDAY_CLIENT_SECRET");
 ```
 
-Or use MCP:
-```
-monday_apps_set_environment_variable({ appId: APP_ID, key: "KEY", value: "val" })
-monday_apps_list_environment_variable_keys({ appId: APP_ID })
+** Set a secret value:**
+Either via the UI in the Developer Center > App > Host on monday > Server-side code > Secrets tab,
+
+Or via CLI:
+```bash
+mapps secrets:set -a ${MONDAY_APP_ID} -k MONDAY_CLIENT_SECRET -v "your_client_secret_value"
 ```
 
 ## Advanced: Multi-Region Deployment
 
-monday-code supports 4 regions: **US, EU, AU, IL**.
+monday-code supports 4 regions: **us, eu, au, il**.
 
 **Important constraints:**
 - Multi-region must be enabled BEFORE using Document DB (irreversible)
@@ -181,17 +189,23 @@ monday-code supports 4 regions: **US, EU, AU, IL**.
 
 Enable multi-region in the Developer Center before first production deploy.
 
-**Setting env vars per region:**
+**Setting secrets per region:**
 ```bash
-mapps code:env -a ${MONDAY_APP_ID} -k KEY -v "value" -r US
-mapps code:env -a ${MONDAY_APP_ID} -k KEY -v "value" -r EU
+mapps secrets:set -a ${MONDAY_APP_ID} -k KEY -v "value" -z us
+mapps secrets:set -a ${MONDAY_APP_ID} -k KEY -v "value" -z il
 ```
+
+**Listing secrets per region:**
+```bash
+mapps secrets:list -a ${MONDAY_APP_ID} -z us
+mapps secrets:list -a ${MONDAY_APP_ID} -z il
 
 ## Advanced: Cron Jobs
 
 Schedule recurring jobs (max 5 per region, IL not supported):
 
 **Create a cron route in your backend:**
+
 ```typescript
 // POST /mndy-cronjob/daily-cleanup
 app.post("/mndy-cronjob/daily-cleanup", async (req, res) => {
