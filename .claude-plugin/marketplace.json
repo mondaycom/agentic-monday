@@ -8,28 +8,10 @@
   "repository": "https://github.com/mondaycom/agentic-monday-apps-framework",
   "plugins": [
     {
-      "name": "monday-code-init",
-      "description": "Initialize new monday code projects (frontend/backend/fullstack) with proper structure, dependencies, and monday-code configuration",
-      "source": "./plugins-official/monday-code-init",
-      "category": "development"
-    },
-    {
-      "name": "monday-code-dev",
-      "description": "Development workflows - run dev servers, local Document DB, tunnel setup for monday code apps",
-      "source": "./plugins-official/monday-code-dev",
-      "category": "development"
-    },
-    {
-      "name": "monday-code-migrate",
-      "description": "Migrate existing frontend, backend, or fullstack apps to monday-code platform — build-tool agnostic, preserves existing code",
-      "source": "./plugins-official/monday-code-migrate",
-      "category": "development"
-    },
-    {
-      "name": "monday-code-deploy",
-      "description": "Build, deploy, and manage monday code apps on serverless/CDN with multi-region, cron, alerts, and security scanning",
-      "source": "./plugins-official/monday-code-deploy",
-      "category": "deployment"
+      "name": "monday-code",
+      "description": "Work with monday code projects (frontend/backend/fullstack) with proper structure, dependencies, and monday-code configuration",
+      "source": "./plugins-official/monday-code",
+      "category": "monday-code"
     }
   ]
 }

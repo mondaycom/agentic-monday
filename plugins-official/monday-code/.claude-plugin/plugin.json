@@ -1,6 +1,6 @@
 {
-  "name": "monday-code-deploy",
-  "description": "Build, deploy, and manage monday code apps on serverless/CDN with multi-region, cron, alerts, and security scanning",
+  "name": "monday-code",
+  "description": "Build, migrate existing app, deploy, and manage monday code apps on serverless/CDN with multi-region, cron, alerts, and security scanning",
   "version": "0.1.0",
   "author": {
     "name": "monday.com"
