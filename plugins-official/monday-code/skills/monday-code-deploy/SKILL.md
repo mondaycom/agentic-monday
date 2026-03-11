@@ -104,13 +104,8 @@ Security scanning is non-blocking - deployment proceeds even if vulnerabilities 
 
 ### Step 3: Connect Deployment to App Features
 
-After deployment, connect it to app features. Use MCP tools if available:
+After deployment, connect it to app features
 
-```
-monday_apps_get_app_features({ appId: MONDAY_APP_ID, appVersionId: VERSION_ID })
-```
-
-Or via CLI:
 ```bash
 mapps app-features:build -a ${MONDAY_APP_ID} -i <version_id> -f <feature_id> -d
 ```
