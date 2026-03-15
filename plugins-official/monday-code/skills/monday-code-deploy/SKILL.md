@@ -1,6 +1,6 @@
 ---
 name: monday-code-deploy
-description: Build, deploy, and manage monday code apps with multi-region, cron, alerts, and security scanning
+description: Build, deploy, and manage monday code apps with multi-region, cron, alerts, and security scanning. Use when user says "deploy my app", "push to monday-code", "deploy to monday", "check deployment status", "set environment variables", "push my app", "deploy backend", "deploy frontend", or wants to promote an app version.
 argument-hint: "[frontend|backend|all|status|env|cron|alerts]"
 user-invocable: true
 allowed-tools: ["Bash", "Read", "Write", "Glob", "Grep", "mcp__monday-apps__*"]
@@ -171,86 +171,15 @@ Or via CLI:
 mapps secrets:set -a ${MONDAY_APP_ID} -k MONDAY_CLIENT_SECRET -v "your_client_secret_value"
 ```
 
-## Advanced: Multi-Region Deployment
+## Advanced Features
 
-monday-code supports 4 regions: **us, eu, au, il**.
+For advanced features (multi-region deployment, cron jobs, alerts, promoting app versions), read `references/advanced-features.md`.
 
-**Important constraints:**
-- Multi-region must be enabled BEFORE using Document DB (irreversible)
-- Public apps only (not private/dev apps)
-- Environment variables are set per-region
-- Alerts are global (apply to all regions)
-- Cron jobs are per-region (IL not supported for cron)
-
-Enable multi-region in the Developer Center before first production deploy.
-
-**Setting secrets per region:**
-```bash
-mapps secrets:set -a ${MONDAY_APP_ID} -k KEY -v "value" -z us
-mapps secrets:set -a ${MONDAY_APP_ID} -k KEY -v "value" -z il
-```
-
-**Listing secrets per region:**
-```bash
-mapps secrets:list -a ${MONDAY_APP_ID} -z us
-mapps secrets:list -a ${MONDAY_APP_ID} -z il
-
-## Advanced: Cron Jobs
-
-Schedule recurring jobs (max 5 per region, IL not supported):
-
-**Create a cron route in your backend:**
-
-```typescript
-// POST /mndy-cronjob/daily-cleanup
-app.post("/mndy-cronjob/daily-cleanup", async (req, res) => {
-  // Cron job logic here
-  await cleanupOldRecords();
-  res.json({ success: true });
-});
-```
-
-**IMPORTANT**: Cron routes MUST use the path prefix `/mndy-cronjob/`.
-
-**Schedule the job:**
-```bash
-mapps scheduler:create -a ${MONDAY_APP_ID} -s "0 0 * * *" -u "/mndy-cronjob/daily-cleanup" -r US
-```
-
-Cron expression format: `minute hour day-of-month month day-of-week`
-
-**List scheduled jobs:**
-```bash
-mapps scheduler:list -a ${MONDAY_APP_ID}
-```
-
-**Delete a job:**
-```bash
-mapps scheduler:delete -a ${MONDAY_APP_ID} -j <job_id>
-```
-
-## Advanced: Alerts
-
-Monitor your app with automated alerts (creates a monday.com board):
-
-**3 alert types:**
-1. **HTTP error rate** - Triggers when error rate exceeds threshold
-2. **HTTP latency** - Triggers when response time exceeds threshold
-3. **Runtime limit quota** - Triggers when approaching compute limits
-
-**Create alerts via Developer Center** > App > Alerts section.
-
-Alerts are global (apply to all regions). They auto-create a monday.com board for notifications.
-
-## Advanced: Promoting App Versions
-
-Promote a development version to live:
-
-```
-monday_apps_promote_app({ appId: APP_ID, appVersionId: VERSION_ID })
-```
-
-Or through the Developer Center UI.
+Use advanced features when:
+- User asks about deploying to multiple regions (us, eu, au, il)
+- User wants to schedule recurring background jobs
+- User wants to monitor their app with automated alerts
+- User wants to promote a development version to live
 
 ## Outbound Networking
 
@@ -271,9 +200,45 @@ Configure in Developer Center > App > Outbound Communication.
 5. Set env vars: `mapps code:env`
 6. Verify: check status + logs
 7. (Optional) Security scan: `mapps code:push -s`
-8. (Optional) Set up cron jobs
-9. (Optional) Configure alerts
-10. Promote to live when ready
+8. (Optional) Advanced features: see `references/advanced-features.md`
+9. Promote to live when ready
+
+## Usage Example
+
+**User says:** "Deploy my monday app to production"
+
+**Actions:**
+1. Check `MONDAY_APP_ID` is set and `mapps` CLI is authenticated
+2. Build frontend: `cd frontend && npm run build`
+3. Push frontend to CDN: `mapps code:push -c -d dist -a ${MONDAY_APP_ID} --force`
+4. Build backend: `cd backend && npm run build`
+5. Push backend to serverless: `mapps code:push -a ${MONDAY_APP_ID} --force`
+6. Verify deployment: `mapps code:status --appVersionId <version_id>`
+
+**Result:** App is live on monday-code with frontend on CDN and backend on serverless infrastructure.
+
+## Troubleshooting
+
+**mapps not authenticated / `mapps init` required:**
+- Run `mapps init` and follow the prompts to authenticate with your monday account.
+
+**MONDAY_APP_ID not set:**
+- Find the app ID in Developer Center > General Settings > App ID, then run `export MONDAY_APP_ID=<id>`.
+
+**Build fails (TypeScript errors):**
+- Fix all TypeScript errors before deploying. Run `npm run build` locally and resolve any compilation errors.
+
+**Deployment times out:**
+- Large bundles can time out. Check that `node_modules/` is excluded from the deployment artifact. The backend uses code.tar.gz which should only include built files.
+
+**`code:push` fails with "app not found":**
+- Verify the app ID matches the app in Developer Center. Ensure you are authenticated with the correct monday account that owns the app.
+
+**Environment variable not visible after deploy:**
+- Re-deploy after setting env vars with `mapps code:env`. Environment variables are baked in at deploy time.
+
+**`MNDY_MONGODB_CONNECTION_STRING` is undefined:**
+- This is auto-injected after the first deploy. Deploy an empty app first, then add your code and deploy again.
 
 ## Notes
 
@@ -281,6 +246,5 @@ Configure in Developer Center > App > Outbound Communication.
 - Use MCP tools (`mcp__monday-apps__*`) to get app version and feature IDs
 - `MNDY_MONGODB_CONNECTION_STRING` is auto-injected - never set manually
 - Security scanning is non-blocking (deploy proceeds regardless)
-- Cron routes must be POST handlers at `/mndy-cronjob/<path>`
-- Enable multi-region BEFORE first Document DB usage
 - Clean up build artifacts (dist.zip, code.tar.gz) after deploy
+- See `references/advanced-features.md` for multi-region, cron jobs, alerts, and promoting versions
