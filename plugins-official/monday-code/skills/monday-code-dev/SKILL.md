@@ -1,6 +1,6 @@
 ---
 name: monday-code-dev
-description: Start development servers and local environment for monday code apps
+description: Start development servers and local environment for monday code apps. Use when user says "start dev server", "run frontend", "run backend", "npm run dev", "start local environment", "set up local dev", or "run the app locally".
 argument-hint: "[frontend|backend|all]"
 user-invocable: true
 allowed-tools: ["Bash", "Read", "Write", "Glob", "Grep"]
@@ -138,3 +138,27 @@ And put in the fielsd the tunnel URL (e.g. `https://548f50475f79.apps-tunnel.mon
 
 For frontend testing inside monday.com:
 - Use the local dev server URL (http://localhost:3000) as the feature's Deployment URL in Developer Center
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Port 3000/8080 already in use | Kill the existing process: `lsof -ti:3000 \| xargs kill` or change the port |
+| `node_modules` missing | Run `npm install` in the relevant directory |
+| Docker not running (MongoDB) | Start Docker Desktop, then re-run the `docker run` command |
+| `.env` file missing | Copy from `.env.example` if available, or create manually with required vars |
+| `MONDAY_CLIENT_SECRET` not set | Get it from Developer Center > Your App > OAuth and add to `backend/.env` |
+| Frontend shows blank page | Check browser console; ensure Vite dev server is running on port 3000 |
+
+## Example
+
+**User says:** "Start the dev server for my fullstack app"
+
+**Actions:**
+1. Detect `frontend/` and `backend/` directories exist (fullstack)
+2. Run `npm install` in both if `node_modules` missing
+3. Check if backend uses MongoDB; start local container if needed
+4. Start backend with `cd backend && npm run dev`
+5. Start frontend with `cd frontend && npm run dev`
+
+**Result:** Backend running on http://localhost:8080, frontend on http://localhost:3000 with HMR
