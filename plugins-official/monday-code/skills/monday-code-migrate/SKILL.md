@@ -1,6 +1,6 @@
 ---
 name: monday-code-migrate
-description: Migrate existing frontend, backend, or fullstack apps to monday-code platform structure
+description: "Use when user says 'migrate my app to monday-code', 'convert to monday platform', 'add monday SDK to existing app', 'deploy existing app on monday', 'move my React/Node app to monday-code', or wants to add monday.com integration to an existing frontend, backend, or fullstack app. Migrates the existing project to monday-code platform structure while preserving existing code."
 argument-hint: "[frontend|backend|fullstack]"
 user-invocable: true
 ---
@@ -16,6 +16,19 @@ Migrate an existing app to the monday-code platform. This skill analyzes the cur
 - User has a fullstack app they want to migrate to monday-code
 - User wants to add monday SDK integration to an existing app
 - User wants to convert a standalone app into a monday.com app
+
+## Usage Example
+
+**User:** "I have an existing React + Express app I want to run on monday-code. How do I migrate it?"
+
+**Actions:**
+1. Detect existing structure: React frontend with Vite, Express backend, TypeScript
+2. Present migration plan: add `.mondaycoderc`, `manifest.json`, `MondayContext`, auth middleware, secrets utils
+3. User approves plan
+4. Execute migration steps, preserving all existing business logic
+5. Run `npm run build` in both frontend and backend to verify
+
+**Result:** App is monday-code compatible with CDN-served frontend and serverless backend, ready to deploy with `/monday-code-deploy`.
 
 ## Input Gathering
 
@@ -622,6 +635,26 @@ If the project is using TypeScript, fix any TypeScript or build errors before co
 - Ensure each query includes `accountId: req.auth!.accountId` in the filter
 - Add `accountId` and `ownerId` fields to all document insert operations
 - Create database indexes on `accountId` for performance
+
+## Troubleshooting
+
+**Build fails after migration: `global is not defined`**
+— The build tool is missing the `global = globalThis` define. See Step 4.2 for build-tool-specific fixes.
+
+**`app.listen is not a function` or server won't start on monday-code**
+— The `app.listen()` call must be separated from route definitions. `app.ts` must export the app without calling `.listen()`. See Step 5.2.
+
+**`MONDAY_CLIENT_SECRET` is undefined at runtime**
+— Use `getSecret("MONDAY_CLIENT_SECRET")` from `apps-sdk` instead of `process.env`. Make sure the secret is set via `mapps code:env:set`.
+
+**MongoDB connection fails after deploy**
+— Use `MNDY_MONGODB_CONNECTION_STRING` env var (auto-injected after first deploy). Do not hardcode the connection string.
+
+**TypeScript compilation errors after restructuring**
+— Check that `tsconfig.json` includes the new files and that all imports use the updated file paths. Run `tsc --noEmit` to see all errors before deploying.
+
+**Session token returns 401 in production**
+— The auth middleware must handle both `decoded.dat.user_id` (monday JWT format) and `decoded.userId` (legacy). See Step 5.3.
 
 ## Notes
 
