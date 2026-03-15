@@ -1,6 +1,6 @@
 ---
 name: monday-code-init
-description: Initialize a new monday.com code app with proper structure, dependencies, and monday-code configuration
+description: "Scaffolds a new monday.com code app with the correct structure, dependencies, and monday-code deployment configuration. Use when user wants to 'create a monday code app', 'scaffold a new app', 'initialize a monday app', 'set up a frontend app', 'set up a backend app', 'create a fullstack monday app', or asks how to get started building on monday-code."
 argument-hint: "[frontend|backend|fullstack]"
 user-invocable: true
 allowed-tools: ["Bash", "Write", "Read", "Glob", "Grep", "mcp__monday-apps__*"]
