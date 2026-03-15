@@ -1,6 +1,6 @@
 ---
 name: monday-code-deploy
-description: Build, deploy, and manage monday code apps with multi-region, cron, alerts, and security scanning
+description: Build, deploy, and manage monday code apps with multi-region, cron, alerts, and security scanning. Use when user says "deploy my app", "push to monday-code", "deploy to monday", "check deployment status", "set environment variables", "push my app", "deploy backend", "deploy frontend", or wants to promote an app version.
 argument-hint: "[frontend|backend|all|status|env|cron|alerts]"
 user-invocable: true
 allowed-tools: ["Bash", "Read", "Write", "Glob", "Grep", "mcp__monday-apps__*"]
@@ -274,6 +274,43 @@ Configure in Developer Center > App > Outbound Communication.
 8. (Optional) Set up cron jobs
 9. (Optional) Configure alerts
 10. Promote to live when ready
+
+## Usage Example
+
+**User says:** "Deploy my monday app to production"
+
+**Actions:**
+1. Check `MONDAY_APP_ID` is set and `mapps` CLI is authenticated
+2. Build frontend: `cd frontend && npm run build`
+3. Push frontend to CDN: `mapps code:push -c -d dist -a ${MONDAY_APP_ID} --force`
+4. Build backend: `cd backend && npm run build`
+5. Push backend to serverless: `mapps code:push -a ${MONDAY_APP_ID} --force`
+6. Verify deployment: `mapps code:status --appVersionId <version_id>`
+
+**Result:** App is live on monday-code with frontend on CDN and backend on serverless infrastructure.
+
+## Troubleshooting
+
+**mapps not authenticated / `mapps init` required:**
+- Run `mapps init` and follow the prompts to authenticate with your monday account.
+
+**MONDAY_APP_ID not set:**
+- Find the app ID in Developer Center > General Settings > App ID, then run `export MONDAY_APP_ID=<id>`.
+
+**Build fails (TypeScript errors):**
+- Fix all TypeScript errors before deploying. Run `npm run build` locally and resolve any compilation errors.
+
+**Deployment times out:**
+- Large bundles can time out. Check that `node_modules/` is excluded from the deployment artifact. The backend uses code.tar.gz which should only include built files.
+
+**`code:push` fails with "app not found":**
+- Verify the app ID matches the app in Developer Center. Ensure you are authenticated with the correct monday account that owns the app.
+
+**Environment variable not visible after deploy:**
+- Re-deploy after setting env vars with `mapps code:env`. Environment variables are baked in at deploy time.
+
+**`MNDY_MONGODB_CONNECTION_STRING` is undefined:**
+- This is auto-injected after the first deploy. Deploy an empty app first, then add your code and deploy again.
 
 ## Notes
 
