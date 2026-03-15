@@ -106,6 +106,7 @@ frontend/
 
 See [references/templates.md](references/templates.md) for full file contents:
 - `frontend/package.json` — React + Vite + monday-sdk-js + @vibe/core
+- `frontend/index.html` — HTML entry point with root div and module script tag
 - `frontend/vite.config.ts` — Vite config with `global: "globalThis"` polyfill
 - `frontend/index.js` — CDN entry point (required by monday-code)
 - `frontend/src/contexts/MondayContext.tsx` — **Critical**: monday SDK integration with local dev mock support
