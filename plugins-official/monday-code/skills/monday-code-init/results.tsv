@@ -1,4 +1,4 @@
 commit	combined_score	pass_rate	structural_score	status	description
 efb2edd	0.914	0.95	83	keep	baseline
 e0927ae	0.935	0.95	90	keep	fix C2+C3: add Use-when triggers and specific phrases to description
-TBD	0.965	0.95	100	keep	extract code templates to references/templates.md, add error handling and usage examples sections
+0cd958d	0.965	0.95	100	keep	extract code templates to references/templates.md, add error handling and usage examples sections
