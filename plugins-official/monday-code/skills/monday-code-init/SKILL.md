@@ -140,6 +140,7 @@ backend/
         ├── logger.ts
         ├── secrets.ts
         ├── env-vars.ts
+        ├── storage.ts (optional, for object/BLOB storage with @mondaycom/apps-sdk >= 3.3.1)
         └── queue.ts (optional, for async processing with monday-code queues)
 ```
 
@@ -153,6 +154,7 @@ See [references/templates.md](references/templates.md) for full file contents:
 - `backend/src/db/connection.ts` — MongoDB connection using MNDY_MONGODB_CONNECTION_STRING
 - `backend/src/utils/secrets.ts` — SecretsManager with local dev fallback
 - `backend/src/utils/env-vars.ts` — EnvironmentVariablesManager wrapper
+- `backend/src/utils/storage.ts` — Optional: Object storage (BLOB) for files, images, documents (requires `@mondaycom/apps-sdk` >= 3.3.1)
 - `backend/src/utils/queue.ts` — Optional: Queue publish/consume with secret validation
 - `backend/.env.example` — MNDY_MONGODB_CONNECTION_STRING, MONDAY_CLIENT_SECRET
 
@@ -168,6 +170,24 @@ See [references/templates.md](references/templates.md) for full file contents:
 - Limits: 50,000 reads / 20,000 writes per region per day
 - Requires `@mondaycom/apps-cli` >= 4.10.2
 - Data is segregated per account automatically
+
+#### Object Storage (Optional)
+
+Include `backend/src/utils/storage.ts` when the user needs to store or serve files (images, documents, videos, archives). Object storage is backed by Google Cloud Storage and is designed for large, unstructured files with infrequent read/write operations.
+
+See [references/templates.md](references/templates.md) for the full `storage.ts` template.
+
+**When to include:**
+- User mentions file uploads, image storage, document management, or BLOB storage
+- User asks about storing large binary data
+- User needs presigned URLs for direct client uploads
+
+**Key constraints:**
+- Requires `@mondaycom/apps-sdk` >= 3.3.1
+- Presigned uploads: max 50 MB per file
+- Presigned URL expiration: default 15 min, max 7 days
+- Server-side uploads: no SDK-enforced limit (practical limits depend on runtime)
+- Only available from backend code running on monday code (not local dev)
 
 ### Step 5: Environment variables
 

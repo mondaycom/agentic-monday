@@ -521,6 +521,91 @@ export function getEnvVar(key: string): string {
 }
 ```
 
+### backend/src/utils/storage.ts (Optional: object/BLOB storage)
+
+Use this when the user needs to store or serve files (images, documents, videos, archives). Requires `@mondaycom/apps-sdk` >= 3.3.1. Only works in monday code (not local dev).
+
+```typescript
+import { ObjectStorage } from "@mondaycom/apps-sdk";
+
+const objectStorage = new ObjectStorage();
+
+/**
+ * Upload a file from server-side code.
+ * For client-side uploads (browser/mobile), use getPresignedUploadUrl instead.
+ */
+export async function uploadFile(
+  fileName: string,
+  content: Buffer,
+  options?: { contentType?: string; metadata?: Record<string, string> }
+) {
+  const result = await objectStorage.uploadFile(fileName, content, options);
+  if (!result.success) {
+    throw new Error(`Failed to upload file: ${fileName}`);
+  }
+  return result;
+}
+
+/**
+ * Download a file and its content type.
+ */
+export async function downloadFile(fileName: string) {
+  const result = await objectStorage.downloadFile(fileName);
+  if (!result.success) {
+    throw new Error(`Failed to download file: ${fileName}`);
+  }
+  return { content: result.content, contentType: result.contentType };
+}
+
+/**
+ * Delete a file from storage.
+ */
+export async function deleteFile(fileName: string) {
+  const result = await objectStorage.deleteFile(fileName);
+  if (!result.success) {
+    throw new Error(`Failed to delete file: ${fileName}`);
+  }
+  return result;
+}
+
+/**
+ * List files, optionally filtered by prefix (logical folder).
+ */
+export async function listFiles(options?: {
+  prefix?: string;
+  maxResults?: number;
+  pageToken?: string;
+}) {
+  return objectStorage.listFiles(options);
+}
+
+/**
+ * Get file metadata without downloading content.
+ */
+export async function getFileInfo(fileName: string) {
+  const result = await objectStorage.getFileInfo(fileName);
+  if (!result.success) {
+    throw new Error(`Failed to get file info: ${fileName}`);
+  }
+  return result.fileInfo;
+}
+
+/**
+ * Generate a presigned URL for direct client-side uploads.
+ * Max file size: 50 MB. Default expiration: 15 minutes (max 7 days).
+ */
+export async function getPresignedUploadUrl(
+  fileName: string,
+  options?: { contentType?: string; expiresInSeconds?: number }
+) {
+  const result = await objectStorage.generateUploadUrl(fileName, options);
+  if (!result.success) {
+    throw new Error(`Failed to generate presigned URL for: ${fileName}`);
+  }
+  return result.uploadUrl;
+}
+```
+
 ### backend/src/utils/queue.ts (Optional: async queue processing)
 
 Use this when the user wants to implement async processing with monday-code's built-in queue system:

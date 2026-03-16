@@ -105,6 +105,30 @@ Build and deploy monday code apps to the monday-code platform (serverless + CDN)
 - **Secrets Manager** — Runtime access to sensitive values via `@mondaycom/apps-sdk`
 - **App promotion** — Promote development versions to live
 
+### `/monday-code-ops` - Debug and operate in production
+
+Debug, monitor, and operate monday code apps after deployment.
+
+```bash
+/monday-code-ops logs              # View or stream production logs
+/monday-code-ops status            # Check deployment status
+/monday-code-ops env               # List/set environment variables
+/monday-code-ops secrets           # List/set secrets
+/monday-code-ops db                # Get MongoDB connection string
+/monday-code-ops alerts            # Check alerts board and configuration
+/monday-code-ops urls              # Get deployment URLs (CDN/serverless)
+```
+
+**What it does:**
+1. Retrieves deployment URLs, status, and version info via CLI and MCP
+2. Streams or views production logs for debugging
+3. Manages environment variables and secrets (list, set, delete, per-region)
+4. Gets MongoDB connection strings for direct database access (MongoDB Compass, mongosh)
+5. Guides alert setup and queries the auto-generated alerts board
+6. Manages cron jobs (list, run on demand, create, delete)
+7. Retrieves security scan reports
+8. Provides structured troubleshooting workflows for common production issues
+
 ## Key Notes
 
 - `MNDY_MONGODB_CONNECTION_STRING` is auto-injected by monday-code after first deploy — never set manually
