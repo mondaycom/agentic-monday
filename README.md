@@ -26,7 +26,7 @@ The `monday-code` plugin uses the monday-apps MCP server. Before installing, set
 
 | Plugin | Skills | Description |
 |--------|--------|-------------|
-| [monday-code](./plugins-official/monday-code/) | `/monday-code-init`, `/monday-code-migrate`, `/monday-code-dev`, `/monday-code-deploy` | Build, deploy, and manage monday code apps on the monday.com platform |
+| [monday-code](./plugins-official/monday-code/) | `/monday-code-init`, `/monday-code-migrate`, `/monday-code-dev`, `/monday-code-deploy`, `/monday-code-ops` | Build, deploy, and manage monday code apps on the monday.com platform |
 
 ## What You Get
 
