@@ -168,7 +168,7 @@ Either via the UI in the Developer Center > App > Host on monday > Server-side c
 
 Or via CLI:
 ```bash
-mapps secrets:set -a ${MONDAY_APP_ID} -k MONDAY_CLIENT_SECRET -v "your_client_secret_value"
+mapps code:secret -m set -i ${MONDAY_APP_ID} -k MONDAY_CLIENT_SECRET -v "your_client_secret_value"
 ```
 
 ## Advanced Features

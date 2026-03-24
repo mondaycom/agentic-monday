@@ -17,14 +17,14 @@ Enable multi-region in the Developer Center before first production deploy.
 
 **Setting secrets per region:**
 ```bash
-mapps secrets:set -a ${MONDAY_APP_ID} -k KEY -v "value" -z us
-mapps secrets:set -a ${MONDAY_APP_ID} -k KEY -v "value" -z il
+mapps code:secret -m set -i ${MONDAY_APP_ID} -k KEY -v "value" -z us
+mapps code:secret -m set -i ${MONDAY_APP_ID} -k KEY -v "value" -z il
 ```
 
 **Listing secrets per region:**
 ```bash
-mapps secrets:list -a ${MONDAY_APP_ID} -z us
-mapps secrets:list -a ${MONDAY_APP_ID} -z il
+mapps code:secret -m set -i ${MONDAY_APP_ID} -z us
+mapps code:secret -m set -i ${MONDAY_APP_ID} -z il
 ```
 
 ## Cron Jobs
