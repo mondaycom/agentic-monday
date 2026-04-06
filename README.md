@@ -1,4 +1,4 @@
-# Monday Apps Framework
+# Agentic monday.com
 
 A Claude Code plugin marketplace for the building on monday.com
 
