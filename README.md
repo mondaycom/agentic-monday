@@ -1,6 +1,6 @@
 # Monday Apps Framework
 
-A Claude Code plugin marketplace for the full SDLC of monday.com apps.
+A Claude Code plugin marketplace for the building on monday.com
 
 ## Prerequisites
 
