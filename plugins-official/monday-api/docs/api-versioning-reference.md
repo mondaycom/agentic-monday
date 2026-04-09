@@ -17,26 +17,25 @@ Reference for monday.com API version lifecycle, schedule, and known breaking cha
 
 Versions follow a quarterly cadence with format `YYYY-MM` where MM is `01`, `04`, `07`, `10`.
 
-| Version | RC Start | Current Start | Maintenance Start | Deprecated |
-|---------|----------|---------------|-------------------|------------|
-| `2026-04` | ~Apr 1, 2026 | Apr 15, 2026 | Jul 15, 2026 | Oct 15, 2026 |
-| `2026-01` | ~Jan 1, 2026 | Jan 15, 2026 | Apr 15, 2026 | Jul 15, 2026 |
-| `2025-10` | ~Oct 1, 2025 | Oct 15, 2025 | Jan 15, 2026 | Apr 15, 2026 |
-| `2025-07` | ~Jul 1, 2025 | Jul 15, 2025 | Oct 15, 2025 | Jan 15, 2026 |
-| `2025-04` | ~Apr 1, 2025 | Apr 15, 2025 | Jul 15, 2025 | Oct 15, 2025 |
-| `2025-01` | ~Jan 1, 2025 | Jan 15, 2025 | Apr 15, 2025 | Jul 15, 2025 |
+Given a version `YYYY-MM`, the schedule is:
 
-**As of April 2026:**
-- **Release Candidate:** `2026-04`
-- **Current (default):** `2026-01`
-- **Maintenance:** `2025-10`
+| Phase | Timing |
+|-------|--------|
+| RC Start | ~1st of `YYYY-MM` |
+| Current Start | ~15th of `YYYY-MM` |
+| Maintenance Start | ~15th of the next quarter month |
+| Deprecated | ~15th of the quarter after that |
+
+For example, for version `YYYY-04`: RC ~Apr 1, Current ~Apr 15, Maintenance ~Jul 15, Deprecated ~Oct 15.
+
+At any point in time there is one **Release Candidate** (`current quarter`), one **Current** version (`previous quarter`), and one **Maintenance** version (`two quarters ago`). Check the [official changelog](https://developer.monday.com/api-reference/docs/api-versioning) for the currently active versions.
 
 ## Version Header Behavior
 
 | What you send | What you get |
 |--------------|--------------|
-| Valid current version (e.g., `2026-01`) | That version |
-| Valid maintenance version (e.g., `2025-10`) | That version |
+| Valid current version (e.g., `YYYY-01`) | That version |
+| Valid maintenance version (e.g., `YYYY-10`) | That version |
 | No `API-Version` header | Current version (changes quarterly!) |
 | Invalid version string | Current version (silent fallback, no error) |
 | Deprecated version | Maintenance version (silent fallback) |
@@ -57,25 +56,16 @@ The API also accepts these aliases instead of `YYYY-MM`:
 
 These are useful for testing but should NOT be used in production — they resolve to different actual versions over time.
 
-## Notable Breaking Changes by Version
+## Notable Breaking Changes
 
-### 2026-01
-- Default API version for `@mondaydotcomorg/api` v13+
-- Timeout/cancellation via `timeoutMs` option added to SDK
+For version-specific breaking changes, always refer to the [official API changelog](https://developer.monday.com/api-reference/docs/api-versioning) — it is the authoritative and up-to-date source.
 
-### 2025-10
-- Default API version for `@mondaydotcomorg/api` v12
-- Various field additions and type refinements
+Common historical patterns to watch for when migrating between versions:
 
-### 2025-07
-- Per-request `versionOverride` option added to SDK
-- `SeamlessApiClientError` now includes partial data (SDK v11.1.0)
-
-### Historical Major Changes
-- **`items` → `items_page`**: The `items` field directly on boards was deprecated in favor of `items_page` with cursor-based pagination. This is the single largest breaking change most developers encounter.
-- **Column value types**: Type-specific fragments (`... on StatusValue`, `... on DateValue`) replaced the generic `value` JSON string approach in newer versions.
-- **ID types**: Several fields changed from `Int` to `ID` (string) type across versions.
-- **Constructor changes**: SDK v6 changed from `query()` to `request()` method, with `{ token }` constructor.
+- **`items` → `items_page`**: The `items` field on boards was deprecated in favor of `items_page` with cursor-based pagination. This is the single largest breaking change most developers encounter.
+- **Column value types**: Type-specific fragments (`... on StatusValue`, `... on DateValue`) replaced the generic `value` JSON string approach.
+- **ID types**: Several fields changed from `Int` to `ID` (string) type.
+- **SDK constructor changes**: `query()` was replaced by `request()` with a `{ token }` constructor in older SDK versions.
 
 ## Migration Checklist
 
@@ -89,13 +79,6 @@ When upgrading between versions:
 
 ## SDK Version ↔ API Version Mapping
 
-Each major SDK version updates the default API version:
+Each major SDK version pins a specific default API version. Upgrading the SDK major version may change your effective API version if you're not pinning explicitly.
 
-| SDK Version | Default API Version |
-|-------------|-------------------|
-| v14.x | `2026-01` |
-| v13.x | `2026-01` |
-| v12.x | `2025-10` |
-| v11.x | `2025-07` |
-
-Upgrading the SDK major version may change your effective API version if you're not pinning explicitly.
+Check the [SDK changelog](https://github.com/mondaycom/monday-sdk-js/blob/master/CHANGELOG.md) to see which API version a given SDK release defaults to.
