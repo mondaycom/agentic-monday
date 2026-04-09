@@ -66,26 +66,37 @@ Show the actual response to the developer so they can see the exact shape.
 
 **Step 4: Present working code**
 
-Show the tested query wrapped in SDK code:
+Show the tested query wrapped in SDK code. Define the query in a `.graphql.ts` file and use code-generated types:
 
 ```typescript
-import { ApiClient } from '@mondaydotcomorg/api';
-
-const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN, apiVersion: '2026-01' });
-
-const result = await client.request(`query {
-  boards(ids: [BOARD_ID]) {
-    name
-    items_page(limit: 25) {
-      cursor
-      items {
-        id
-        name
-        column_values { id text value }
+// src/queries.graphql.ts
+export const GET_BOARD_ITEMS = `
+  query GetBoardItems($boardId: [ID!]!) {
+    boards(ids: $boardId) {
+      name
+      items_page(limit: 25) {
+        cursor
+        items {
+          id
+          name
+          column_values { id text value }
+        }
       }
     }
   }
-}`);
+`;
+```
+
+```typescript
+// src/index.ts
+import 'dotenv/config';
+import { ApiClient } from '@mondaydotcomorg/api';
+import { GET_BOARD_ITEMS } from './queries.graphql';
+import type { GetBoardItemsQuery } from './generated/graphql'; // from npm run codegen
+
+const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN! });
+
+const result = await client.request<GetBoardItemsQuery>(GET_BOARD_ITEMS, { boardId: [BOARD_ID] });
 ```
 
 ---
@@ -257,39 +268,50 @@ query {
 
 **Full pagination loop in SDK code:**
 
+Define queries in a `.graphql.ts` file and use code-generated types:
+
 ```typescript
-import { ApiClient } from '@mondaydotcomorg/api';
+// src/queries.graphql.ts
+export const GET_BOARD_ITEMS_PAGE = `
+  query GetBoardItemsPage($boardId: [ID!]!) {
+    boards(ids: $boardId) {
+      items_page(limit: 100) {
+        cursor
+        items { id name }
+      }
+    }
+  }
+`;
 
-const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN, apiVersion: '2026-01' });
-
-let allItems = [];
-let cursor = null;
-
-// Phase 1: Initial query
-const firstPage = await client.request(`query {
-  boards(ids: [BOARD_ID]) {
-    items_page(limit: 100) {
+export const GET_NEXT_ITEMS_PAGE = `
+  query GetNextItemsPage($cursor: String!) {
+    next_items_page(limit: 100, cursor: $cursor) {
       cursor
       items { id name }
     }
   }
-}`);
+`;
+```
 
+```typescript
+// src/index.ts
+import 'dotenv/config';
+import { ApiClient } from '@mondaydotcomorg/api';
+import { GET_BOARD_ITEMS_PAGE, GET_NEXT_ITEMS_PAGE } from './queries.graphql';
+import type { GetBoardItemsPageQuery, GetNextItemsPageQuery } from './generated/graphql';
+
+const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN! });
+
+let allItems: GetBoardItemsPageQuery['boards'][0]['items_page']['items'] = [];
+
+// Phase 1: Initial query
+const firstPage = await client.request<GetBoardItemsPageQuery>(GET_BOARD_ITEMS_PAGE, { boardId: [BOARD_ID] });
 allItems.push(...firstPage.boards[0].items_page.items);
-cursor = firstPage.boards[0].items_page.cursor;
+let cursor = firstPage.boards[0].items_page.cursor;
 
 // Phase 2: Subsequent pages (root-level!)
 while (cursor) {
-  const nextPage = await client.request(
-    `query ($cursor: String!) {
-      next_items_page(limit: 100, cursor: $cursor) {
-        cursor
-        items { id name }
-      }
-    }`,
-    { cursor }
-  );
-
+  const nextPage = await client.request<GetNextItemsPageQuery>(GET_NEXT_ITEMS_PAGE, { cursor });
   allItems.push(...nextPage.next_items_page.items);
   cursor = nextPage.next_items_page.cursor;
 }

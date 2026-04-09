@@ -103,35 +103,28 @@ Alternatively, with Node 20.6+ you can pass `--env-file=.env` to the node CLI wi
 
 **Server-side (Node.js):**
 
+Define queries in a `.graphql.ts` file and import code-generated types (run `npm run codegen` after `npm run fetch:schema`):
+
 ```typescript
-import { ApiClient } from '@mondaydotcomorg/api';
-
-const client = new ApiClient({
-  token: process.env.MONDAY_API_TOKEN!,
-  apiVersion: '2026-01'
-});
-
-// Usage
-const result = await client.request(`{ me { name email } }`);
-console.log(result.me.name);
+// src/queries.graphql.ts
+export const GET_ME = `
+  query GetMe {
+    me { name email }
+  }
+`;
 ```
 
-**Raw HTTP (no SDK):**
-
 ```typescript
-const response = await fetch('https://api.monday.com/v2', {
-  method: 'POST',
-  headers: {
-    'Authorization': process.env.MONDAY_API_TOKEN!,
-    'Content-Type': 'application/json',
-    'API-Version': '2026-01'
-  },
-  body: JSON.stringify({
-    query: '{ me { name email } }'
-  })
-});
+// src/index.ts
+import 'dotenv/config';
+import { ApiClient } from '@mondaydotcomorg/api';
+import { GET_ME } from './queries.graphql';
+import type { GetMeQuery } from './generated/graphql';
 
-const { data, errors } = await response.json();
+const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN! });
+
+const result = await client.request<GetMeQuery>(GET_ME);
+console.log(result.me.name);
 ```
 
 ### Step 5: Pin API Version
@@ -146,10 +139,26 @@ Explain:
 
 ### Step 6: Verify Setup
 
-Provide a test query and offer to run it live:
+Provide a test query and offer to run it live. Use the `.graphql.ts` pattern:
 
 ```typescript
-const result = await client.request(`{ me { name email account { name } } }`);
+// src/queries.graphql.ts
+export const GET_ME = `
+  query GetMe {
+    me { name email account { name } }
+  }
+`;
+```
+
+```typescript
+// src/index.ts
+import 'dotenv/config';
+import { ApiClient } from '@mondaydotcomorg/api';
+import { GET_ME } from './queries.graphql';
+import type { GetMeQuery } from './generated/graphql';
+
+const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN! });
+const result = await client.request<GetMeQuery>(GET_ME);
 console.log('Connected as:', result.me.name);
 console.log('Account:', result.me.account.name);
 ```
