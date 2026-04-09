@@ -2,6 +2,8 @@
 
 Quick reference for JSON formats when reading and writing monday.com column values via the GraphQL API.
 
+> For the full and up-to-date list of column types and their formats, see the [official Column Types Reference](https://developer.monday.com/api-reference/reference/column-types-reference).
+
 ## How Column Values Work
 
 Column values in the monday.com API use JSON strings. When writing, the `column_values` argument takes a **stringified JSON object** keyed by column ID:

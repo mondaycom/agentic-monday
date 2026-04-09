@@ -81,6 +81,19 @@ MONDAY_API_TOKEN=your_token_here
 
 Add `.env` to `.gitignore` if not already listed.
 
+**Node.js does not load `.env` files automatically.** Install `dotenv` and load it at the entry point of the app:
+
+```bash
+npm install dotenv
+```
+
+```typescript
+import 'dotenv/config'; // must be first import
+import { ApiClient } from '@mondaydotcomorg/api';
+```
+
+Alternatively, with Node 20.6+ you can pass `--env-file=.env` to the node CLI without any package.
+
 **Key points to explain:**
 - The token mirrors the **exact permissions** of the user who created it. If the user can't see a board in the UI, API calls can't see it either.
 - Do NOT prefix with `Bearer` — the SDK handles this. For raw HTTP, pass the token directly as the `Authorization` header value.

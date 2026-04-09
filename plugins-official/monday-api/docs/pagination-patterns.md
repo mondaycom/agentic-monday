@@ -109,26 +109,48 @@ query {
 
 ### TypeScript with @mondaydotcomorg/api SDK
 
+Define your queries in a dedicated `.graphql.ts` file (as scaffolded by `@mondaydotcomorg/setup-api`) and import code-generated types:
+
 ```typescript
-import { ApiClient } from '@mondaydotcomorg/api';
-
-const client = new ApiClient({
-  token: process.env.MONDAY_API_TOKEN,
-  apiVersion: '2026-01'
-});
-
-async function getAllItems(boardId: string) {
-  const allItems: any[] = [];
-
-  // Phase 1: Initial query
-  const firstPage = await client.request(`query ($boardId: [ID!]!) {
+// src/queries.graphql.ts
+export const GET_BOARD_ITEMS = `
+  query GetBoardItems($boardId: [ID!]!) {
     boards(ids: $boardId) {
       items_page(limit: 500) {
         cursor
         items { id name column_values { id text value } }
       }
     }
-  }`, { boardId: [boardId] });
+  }
+`;
+
+export const GET_NEXT_ITEMS_PAGE = `
+  query GetNextItemsPage($cursor: String!) {
+    next_items_page(limit: 500, cursor: $cursor) {
+      cursor
+      items { id name column_values { id text value } }
+    }
+  }
+`;
+```
+
+```typescript
+// src/pagination.ts
+import { ApiClient } from '@mondaydotcomorg/api';
+import { GET_BOARD_ITEMS, GET_NEXT_ITEMS_PAGE } from './queries.graphql';
+// Import code-generated types after running `npm run codegen`
+import type { GetBoardItemsQuery, GetNextItemsPageQuery } from './generated/graphql';
+
+const client = new ApiClient({ token: process.env.MONDAY_API_TOKEN! });
+
+async function getAllItems(boardId: string) {
+  const allItems: GetBoardItemsQuery['boards'][0]['items_page']['items'] = [];
+
+  // Phase 1: Initial query
+  const firstPage = await client.request<GetBoardItemsQuery>(
+    GET_BOARD_ITEMS,
+    { boardId: [boardId] }
+  );
 
   const page = firstPage.boards[0].items_page;
   allItems.push(...page.items);
@@ -136,13 +158,10 @@ async function getAllItems(boardId: string) {
 
   // Phase 2: Subsequent pages (root-level!)
   while (cursor) {
-    const nextPage = await client.request(`query ($cursor: String!) {
-      next_items_page(limit: 500, cursor: $cursor) {
-        cursor
-        items { id name column_values { id text value } }
-      }
-    }`, { cursor });
-
+    const nextPage = await client.request<GetNextItemsPageQuery>(
+      GET_NEXT_ITEMS_PAGE,
+      { cursor }
+    );
     allItems.push(...nextPage.next_items_page.items);
     cursor = nextPage.next_items_page.cursor;
   }
@@ -151,48 +170,7 @@ async function getAllItems(boardId: string) {
 }
 ```
 
-### JavaScript with fetch
-
-```javascript
-async function getAllItems(boardId, token) {
-  const allItems = [];
-  const endpoint = 'https://api.monday.com/v2';
-  const headers = {
-    'Authorization': token,
-    'Content-Type': 'application/json',
-    'API-Version': '2026-01'
-  };
-
-  // Phase 1
-  let res = await fetch(endpoint, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      query: `{ boards(ids: [${boardId}]) { items_page(limit: 500) { cursor items { id name } } } }`
-    })
-  });
-  let data = (await res.json()).data;
-  allItems.push(...data.boards[0].items_page.items);
-  let cursor = data.boards[0].items_page.cursor;
-
-  // Phase 2
-  while (cursor) {
-    res = await fetch(endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        query: `query ($cursor: String!) { next_items_page(limit: 500, cursor: $cursor) { cursor items { id name } } }`,
-        variables: { cursor }
-      })
-    });
-    data = (await res.json()).data;
-    allItems.push(...data.next_items_page.items);
-    cursor = data.next_items_page.cursor;
-  }
-
-  return allItems;
-}
-```
+> Use `npm run codegen` (from `@mondaydotcomorg/setup-api` scaffold) to generate typed query result types from your `.graphql.ts` files.
 
 ## Pagination by Group
 
