@@ -80,5 +80,3 @@ When upgrading between versions:
 ## SDK Version ↔ API Version Mapping
 
 Each major SDK version pins a specific default API version. Upgrading the SDK major version may change your effective API version if you're not pinning explicitly.
-
-Check the [SDK changelog](https://github.com/mondaycom/monday-sdk-js/blob/master/CHANGELOG.md) to see which API version a given SDK release defaults to.
