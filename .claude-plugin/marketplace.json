@@ -12,6 +12,12 @@
       "description": "Work with monday code projects (frontend/backend/fullstack) with proper structure, dependencies, and monday-code configuration",
       "source": "./plugins-official/monday-code",
       "category": "monday-code"
+    },
+    {
+      "name": "monday-api",
+      "description": "Simplifies the monday.com public GraphQL API for external developers. Setup projects with the @mondaydotcomorg/api SDK, build and live-test queries, migrate between API versions, and operate in production with proper error handling, rate limits, and retries.",
+      "source": "./plugins-official/monday-api",
+      "category": "monday-api"
     }
   ]
 }
