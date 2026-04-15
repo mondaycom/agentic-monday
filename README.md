@@ -13,10 +13,10 @@ The `monday-code` plugin uses the monday-apps MCP server. Before installing, set
 
 ```bash
 # Add the marketplace
-/plugin marketplace add mondaycom/agentic-monday-apps-framework
+/plugin marketplace add mondaycom/agentic-monday
 
 # Install plugins
-/plugin install monday-code@agentic-monday-apps-framework
+/plugin install monday-code@agentic-monday
 
 # Use a skill
 /monday-code-init fullstack
