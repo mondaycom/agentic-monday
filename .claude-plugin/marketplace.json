@@ -18,6 +18,12 @@
       "description": "Simplifies the monday.com public GraphQL API for external developers. Setup projects with the @mondaydotcomorg/api SDK, build and live-test queries, migrate between API versions, and operate in production with proper error handling, rate limits, and retries.",
       "source": "./plugins-official/monday-api",
       "category": "monday-api"
+    },
+    {
+      "name": "vibe",
+      "description": "Build monday.com apps with the Vibe design system (@vibe/core). Best practices for component usage, accessibility (WCAG 2.1 AA), design tokens, icon imports, and major version migration.",
+      "source": "./plugins-official/vibe",
+      "category": "vibe"
     }
   ]
 }
