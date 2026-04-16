@@ -7,6 +7,8 @@ allowed-tools:
     Read,
     Glob,
     Grep,
+    Edit,
+    Write,
     mcp__vibe__get-vibe-component-metadata,
     mcp__vibe__get-vibe-component-accessibility,
     mcp__vibe__list-vibe-public-components,

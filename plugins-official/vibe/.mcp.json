@@ -2,7 +2,7 @@
   "mcpServers": {
     "vibe": {
       "command": "npx",
-      "args": ["@vibe/mcp"]
+      "args": ["-y", "@vibe/mcp@1"]
     }
   }
 }

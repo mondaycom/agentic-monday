@@ -93,6 +93,16 @@ For each file in the tool output:
 
 Run the install command provided by the MCP tool output. It will include the correct package version.
 
+**For v2 → v3 only:** after running the install command, also remove the v2 package:
+
+| Package Manager | Uninstall Command |
+|-----------------|-------------------|
+| `npm` | `npm uninstall monday-ui-react-core` |
+| `yarn` | `yarn remove monday-ui-react-core` |
+| `pnpm` | `pnpm remove monday-ui-react-core` |
+
+Do not rely on the MCP tool to include this step — always run it explicitly for v2→v3 migrations.
+
 Detect the project's package manager from lock files first:
 
 | Lock File | Package Manager |
@@ -132,6 +142,7 @@ Use the Grep tool to confirm any deprecated patterns flagged by the MCP tool are
 | Only applying changes to some files | Apply ALL changes from the tool output |
 | Calling the MCP tool with a relative path | Always use an absolute path |
 | Running v2→v4 in one hop | Complete v2→v3 fully, then run v3→v4 |
+| Skipping `monday-ui-react-core` uninstall on v2→v3 | Always explicitly uninstall the v2 package |
 | Continuing after a tool error | Stop and report; never attempt manual migration |
 | Using wrong package manager | Detect from lock files before running install |
 
