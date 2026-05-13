@@ -5,7 +5,7 @@ Build, deploy, and manage monday code apps on the monday.com platform.
 ## Installation
 
 ```bash
-/plugin install monday-code@agentic-monday-apps-framework
+/plugin install monday-code@agentic-monday
 ```
 
 ## Skills

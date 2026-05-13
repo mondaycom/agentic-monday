@@ -12,7 +12,7 @@ Guide for adding new plugins to the Monday Apps Framework marketplace.
   "author": {
     "name": "your-name"
   },
-  "repository": "https://github.com/mondaycom/agentic-monday-apps-framework",
+  "repository": "https://github.com/mondaycom/agentic-monday",
   "keywords": ["monday", "monday-code", "your-keywords"]
 }
 ```
