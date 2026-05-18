@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "timestamp": "2026-05-12T11:17:48.669Z",
+    "pr_number": 729,
+    "run_id": 25730947850,
+    "model": "sonnet",
+    "pass_rate": {
+      "passed": 13,
+      "total": 13
+    }
+  },
+  "results": [
+    {
+      "eval_id": 1,
+      "prompt": "I need to migrate my monday app from the old OAuth flow to the new OAuth 2.1. Can you help me update the token endpoint and add refresh token support?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "routed_skill": "monday-oauth-migrate",
+      "passed": true
+    },
+    {
+      "eval_id": 2,
+      "prompt": "My app is calling auth.monday.com/oauth2/token but I heard this is being deprecated. How do I switch to the new endpoint?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "routed_skill": "monday-oauth-migrate",
+      "passed": true
+    },
+    {
+      "eval_id": 3,
+      "prompt": "We got an email from monday about OAuth deprecation and need to add refresh tokens to our integration. Can you walk me through this?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "routed_skill": "monday-oauth-migrate",
+      "passed": true
+    },
+    {
+      "eval_id": 4,
+      "prompt": "Our monday OAuth access tokens are now expiring and we need to handle token refresh. The old flow didn't have this.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "routed_skill": "monday-oauth-migrate",
+      "passed": true
+    },
+    {
+      "eval_id": 5,
+      "prompt": "I want to update our monday.com integration from oauth2/token to oauth_ms/oauth/token. Also need to add PKCE for better security.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "routed_skill": "monday-oauth-migrate",
+      "passed": true
+    },
+    {
+      "eval_id": 6,
+      "prompt": "Help me migrate to the new monday OAuth flow. I need to change the token endpoint and make sure we're storing refresh tokens properly.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "routed_skill": "monday-oauth-migrate",
+      "passed": true
+    },
+    {
+      "eval_id": 7,
+      "prompt": "The monday.com developer center says I need to enable the new OAuth flow toggle. Once I do that, what code changes do I need to make?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "routed_skill": "monday-oauth-migrate",
+      "passed": true
+    },
+    {
+      "eval_id": 8,
+      "prompt": "I want to implement OAuth from scratch for my new monday app. How do I set up the authorization flow?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "routed_skill": "none",
+      "passed": true
+    },
+    {
+      "eval_id": 9,
+      "prompt": "Help me add Google OAuth to my app so users can sign in with their Google accounts",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "routed_skill": "none",
+      "passed": true
+    },
+    {
+      "eval_id": 10,
+      "prompt": "I need to set up Slack OAuth integration in my monday app. Can you help with the authentication flow?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "routed_skill": "none",
+      "passed": true
+    },
+    {
+      "eval_id": 11,
+      "prompt": "My monday API calls are failing. Can you help me debug why the GraphQL queries aren't working?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "routed_skill": "none",
+      "passed": true
+    },
+    {
+      "eval_id": 12,
+      "prompt": "How do I use the monday.com client credentials flow for server-to-server authentication?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "routed_skill": "none",
+      "passed": true
+    },
+    {
+      "eval_id": 13,
+      "prompt": "Can you explain what DCR (Dynamic Client Registration) is for monday apps?",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "routed_skill": "none",
+      "passed": true
+    }
+  ]
+}
