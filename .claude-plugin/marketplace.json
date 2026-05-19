@@ -24,27 +24,6 @@
       "description": "Build monday.com apps with the Vibe design system (@vibe/core). Best practices for component usage, accessibility (WCAG 2.1 AA), design tokens, icon imports, and major version migration.",
       "source": "./plugins-official/vibe",
       "category": "vibe"
-    },
-    {
-      "name": "monday-oauth-migrate",
-      "source": "./plugins-community/monday-oauth-migrate",
-      "description": "Migrate monday.com apps from old OAuth to OAuth 2.1 with refresh tokens and optional PKCE",
-      "version": "1.0.0",
-      "category": "development-lifecycle",
-      "tags": [
-        "domain:authorization",
-        "role:developer"
-      ],
-      "keywords": [
-        "oauth",
-        "oauth2",
-        "migration",
-        "monday",
-        "authentication",
-        "refresh-token",
-        "pkce",
-        "token"
-      ]
     }
   ]
 }
