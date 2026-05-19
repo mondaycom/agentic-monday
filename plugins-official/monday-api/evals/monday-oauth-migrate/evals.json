@@ -1,0 +1,109 @@
+{
+  "skill_name": "monday-oauth-migrate-skills",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to migrate my monday app from the old OAuth flow to the new OAuth 2.1. Can you help me update the token endpoint and add refresh token support?",
+      "expected_output": "Should trigger monday-oauth-migrate. The skill guides through the complete OAuth migration with token endpoint changes and refresh token implementation.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "My app is calling auth.monday.com/oauth2/token but I heard this is being deprecated. How do I switch to the new endpoint?",
+      "expected_output": "Should trigger monday-oauth-migrate. The skill detects calls to the old oauth2/token endpoint and migrates to oauth_ms/oauth/token.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "We got an email from monday about OAuth deprecation and need to add refresh tokens to our integration. Can you walk me through this?",
+      "expected_output": "Should trigger monday-oauth-migrate. The skill handles OAuth deprecation migrations including refresh token support.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Our monday OAuth access tokens are now expiring and we need to handle token refresh. The old flow didn't have this.",
+      "expected_output": "Should trigger monday-oauth-migrate. The skill adds token refresh logic for the new OAuth 2.1 flow where tokens expire.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "I want to update our monday.com integration from oauth2/token to oauth_ms/oauth/token. Also need to add PKCE for better security.",
+      "expected_output": "Should trigger monday-oauth-migrate. The skill migrates the token endpoint and optionally adds PKCE support.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Help me migrate to the new monday OAuth flow. I need to change the token endpoint and make sure we're storing refresh tokens properly.",
+      "expected_output": "Should trigger monday-oauth-migrate. The skill covers endpoint migration, token storage updates, and refresh token handling.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "The monday.com developer center says I need to enable the new OAuth flow toggle. Once I do that, what code changes do I need to make?",
+      "expected_output": "Should trigger monday-oauth-migrate. The skill guides through all code changes needed after enabling the new OAuth flow.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": true,
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "I want to implement OAuth from scratch for my new monday app. How do I set up the authorization flow?",
+      "expected_output": "Should NOT trigger monday-oauth-migrate — this is for new OAuth implementation, not migration. The skill explicitly says not to use for new OAuth from scratch.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Help me add Google OAuth to my app so users can sign in with their Google accounts",
+      "expected_output": "Should NOT trigger monday-oauth-migrate — this is for Google OAuth, not monday.com OAuth migration.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "I need to set up Slack OAuth integration in my monday app. Can you help with the authentication flow?",
+      "expected_output": "Should NOT trigger monday-oauth-migrate — this is for Slack OAuth, not monday.com OAuth migration.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "My monday API calls are failing. Can you help me debug why the GraphQL queries aren't working?",
+      "expected_output": "Should NOT trigger monday-oauth-migrate — this is general monday API debugging, not OAuth migration.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "How do I use the monday.com client credentials flow for server-to-server authentication?",
+      "expected_output": "Should NOT trigger monday-oauth-migrate — this is about client credentials flow, which is different from OAuth user authorization flow.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "Can you explain what DCR (Dynamic Client Registration) is for monday apps?",
+      "expected_output": "Should NOT trigger monday-oauth-migrate — this is a question about DCR, not an OAuth migration task.",
+      "target_skill": "monday-oauth-migrate",
+      "should_trigger": false,
+      "files": []
+    }
+  ]
+}

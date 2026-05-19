@@ -1,7 +1,7 @@
 {
   "name": "monday-api",
   "description": "Simplifies the monday.com public GraphQL API for external developers. Setup projects with the @mondaydotcomorg/api SDK, build and live-test queries, migrate between API versions, and operate in production with proper error handling, rate limits, and retries.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "monday.com"
   },
