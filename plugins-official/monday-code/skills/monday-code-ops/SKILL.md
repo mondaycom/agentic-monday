@@ -70,13 +70,13 @@ See [references/deployment-status.md](references/deployment-status.md) for MCP a
 
 ### 3. View Logs
 
-Stream or search production logs. See [references/logs.md](references/logs.md) for full CLI flags, date filtering, and regex search options.
+Stream live production logs or fetch historical logs. See [references/logs.md](references/logs.md) for full CLI flags, date filtering, and source/log type requirements.
 
 ```bash
-mapps code:logs -i <version_id>                          # Stream live logs
-mapps code:logs -i <version_id> -t http                  # HTTP request logs only
-mapps code:logs -i <version_id> -t console               # Console/stdout only
-mapps code:logs -i <version_id> -s live -r "error|timeout"  # Search with regex
+mapps code:logs -i <version_id> -s live -t console       # Stream live console logs
+mapps code:logs -i <version_id> -s live -t http          # Stream live HTTP request logs
+mapps code:logs -i <version_id> -s history -t console -f "03/15/2026 00:00" -e "03/15/2026 23:59" -r ""  # Historical console logs
+mapps code:logs -i <version_id> -s history -t console -f "03/15/2026 00:00" -e "03/15/2026 23:59" -r "error|timeout"  # Search historical logs
 ```
 
 ### 4. Environment Variables
@@ -167,8 +167,8 @@ User says: "My app is returning errors in production"
 Actions:
 1. Get the version ID: `mapps app-version:list -i ${MONDAY_APP_ID}`
 2. Check deployment status: `mapps code:status -i <version_id>`
-3. Stream console logs: `mapps code:logs -i <version_id> -t console`
-4. Search for errors: `mapps code:logs -i <version_id> -s live -r "error|exception|failed"`
+3. Stream console logs: `mapps code:logs -i <version_id> -s live -t console`
+4. Search historical console logs: `mapps code:logs -i <version_id> -s history -t console -f "03/15/2026 00:00" -e "03/15/2026 23:59" -r "error|exception|failed"`
 5. Check env vars are set: `mapps code:env -i ${MONDAY_APP_ID} -m list-keys`
 
 Result: Found uncaught exception in webhook handler. Missing `MONDAY_SIGNING_SECRET` — set the secret and re-deployed to fix.
@@ -192,7 +192,7 @@ Actions:
 1. Check deployment status: `mapps code:status -i <version_id>`
 2. Guide user to set up alerts via Developer Center > Alert policies
 3. Show how to query the alert board: `mcp__monday__get_board_items_page({ boardId: ALERT_BOARD_ID })`
-4. Stream initial logs to verify healthy operation: `mapps code:logs -i <version_id>`
+4. Stream initial logs to verify healthy operation: `mapps code:logs -i <version_id> -s live -t console`
 
 Result: Deployment confirmed healthy. Alert policies created for HTTP error rate (>5%) and latency (>2000ms at P95).
 
@@ -206,7 +206,7 @@ Result: Deployment confirmed healthy. Alert policies created for HTTP error rate
 ### "My app is slow / timing out"
 
 **Cause:** Slow database queries, external API timeouts, or resource limits.
-**Solution:** Check HTTP latency logs (`-t http`), search for timeout patterns (`-r "timeout|slow|ETIMEDOUT"`), review cron jobs consuming resources (`scheduler:list`), and check the security report for dependency issues.
+**Solution:** Check HTTP latency logs (`-s live -t http`), search historical logs with `-s history -t console -f <start> -e <end> -r "timeout|slow|ETIMEDOUT"`, review cron jobs consuming resources (`scheduler:list`), and check the security report for dependency issues.
 
 ### "Environment variable or secret not working"
 
