@@ -1,0 +1,67 @@
+version: 1
+
+workspace:
+  id: 143
+  name: Agentic monday
+  monday_workspace_id: 3460951
+
+owner:
+  team: agentic-monday
+  user: gregr@monday.com
+
+templates:
+  repo: DaPulse/agentic-builders-templates
+
+context_repo: DaPulse/agentic-monday
+
+agents:
+  - profession: technical-team-lead
+    name: TL Greg
+    sphera_id: 2173
+    triggers:
+      - type: heartbeat
+    jbtd:
+      - reviewing-code
+      - technical-planning
+      - assign-tasks
+
+  - profession: senior-engineer
+    name: Eng Grit
+    sphera_id: 2174
+    triggers:
+      - type: heartbeat
+    jbtd:
+      - implementing-features
+      - reviewing-code
+
+  - profession: product-manager
+    name: PM Renata
+    sphera_id: 2175
+    triggers:
+      - type: heartbeat
+    jbtd:
+      - writing-feature-specs
+
+  - profession: product-designer
+    name: UX Dina
+    sphera_id: 2176
+    triggers:
+      - type: heartbeat
+    jbtd: []
+
+  - profession: data-analyst
+    name: Analyst Quinn
+    sphera_id: 2177
+    triggers:
+      - type: heartbeat
+    jbtd:
+      - analyzing-data
+
+  - profession: data-scientist
+    name: Data Sam
+    sphera_id: 2172
+    triggers:
+      - type: heartbeat
+    jbtd:
+      - designing-experiments
+      - analyzing-data
